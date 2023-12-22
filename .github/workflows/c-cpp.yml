@@ -213,7 +213,7 @@ jobs:
 
     - name: compress
       run: tar zcvf pffft_windows-mingw-amd64.tar.gz --exclude=CMakeFiles --exclude=*.cmake --exclude=Makefile --exclude=CMakeCache.txt  build_mgw64
-    - name: 'Upload Artifact'
+    - name: 'Upload Windows Artifact'
       uses: actions/upload-artifact@v2
       with:
         name: pffft_windows_mingw_builds
