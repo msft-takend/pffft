@@ -193,6 +193,15 @@ if (INSTALL_PFFFT)
   set(INSTALL_HEADERS ${INSTALL_HEADERS} pffft.hpp)
 endif()
 
+add_library(PFFF_SHARED SHARED ${FLOAT_SOURCES} ${DOUBLE_SOURCES} pffft_common.c pffft_priv_impl.h pffft.hpp )
+set_target_properties(PFFF_SHARED PROPERTIES OUTPUT_NAME "pffft_shared")
+target_compile_definitions(PFFF_SHARED PRIVATE _USE_MATH_DEFINES)
+target_activate_c_compiler_warnings(PFFF_SHARED)
+target_set_c_arch_flags(PFFF_SHARED)
+target_link_libraries( PFFF_SHARED ${ASANLIB} ${MATHLIB} )
+set_property(TARGET PFFF_SHARED APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+)
 ######################################################
 
 if (PFFFT_USE_TYPE_FLOAT)
