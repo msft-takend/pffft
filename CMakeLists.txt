@@ -246,6 +246,16 @@ if (PFFFT_USE_FFTPACK)
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   )
 
+  add_library(SFFTPACK_FLOAT SHARED fftpack.c fftpack.h)
+  target_compile_definitions(SFFTPACK_FLOAT PRIVATE _USE_MATH_DEFINES)
+  target_activate_c_compiler_warnings(SFFTPACK_FLOAT)
+  target_link_libraries( SFFTPACK_FLOAT ${MATHLIB} )
+  set_property(TARGET FFTPACK_FLOAT APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  )
+  generate_export_header(SFFTPACK_FLOAT)
+
+
   # double precision
   add_library(FFTPACK_DOUBLE STATIC fftpack.c fftpack.h)
   target_compile_definitions(FFTPACK_DOUBLE PRIVATE _USE_MATH_DEFINES)
