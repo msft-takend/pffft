@@ -194,7 +194,7 @@ if (INSTALL_PFFFT)
 endif()
 
 
-add_library(PFFFT_SHARED STATIC ${FLOAT_SOURCES} ${DOUBLE_SOURCES} pffft_common.c pffft_priv_impl.h pffft.hpp )
+add_library(PFFFT_SHARED SHARED ${FLOAT_SOURCES} ${DOUBLE_SOURCES} pffft_common.c pffft_priv_impl.h pffft.hpp )
 if (WIN32)
   set_target_properties(PFFFT_SHARED PROPERTIES OUTPUT_NAME "pffft.s.dll")
 else()
