@@ -195,7 +195,7 @@ endif()
 
 
 add_library(PFFFT_SHARED64 SHARED ${FLOAT_SOURCES} ${DOUBLE_SOURCES} pffft_common.c pffft_priv_impl.h pffft.hpp )
-target_compile_options(PFFFT_SHARED64 CMAKE_GENERATOR_PLATFORM "-x64")
+target_compile_options(PFFFT_SHARED64 CMAKE_GENERATOR_PLATFORM "x64")
 if (WIN32)
   set_target_properties(PFFFT_SHARED64 PROPERTIES OUTPUT_NAME "pffft.x64.dll")
 else()
