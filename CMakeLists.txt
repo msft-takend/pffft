@@ -168,7 +168,7 @@ else()
   set( DOUBLE_SOURCES )
 endif()
 
-######################################################
+######################################################PFFFT_SHARED
 
 add_library(PFFFT STATIC ${FLOAT_SOURCES} ${DOUBLE_SOURCES} pffft_common.c pffft_priv_impl.h pffft.hpp )
 set_target_properties(PFFFT PROPERTIES OUTPUT_NAME "pffft")
@@ -194,28 +194,27 @@ if (INSTALL_PFFFT)
 endif()
 
 
-add_library(PFFFT_SHARED64 SHARED ${FLOAT_SOURCES} ${DOUBLE_SOURCES} pffft_common.c pffft_priv_impl.h pffft.hpp )
-target_compile_options(PFFFT_SHARED64 CMAKE_GENERATOR_PLATFORM "x64")
+add_library(PFFFT_SHARED SHARED ${FLOAT_SOURCES} ${DOUBLE_SOURCES} pffft_common.c pffft_priv_impl.h pffft.hpp )
 if (WIN32)
-  set_target_properties(PFFFT_SHARED64 PROPERTIES OUTPUT_NAME "pffft.x64.dll")
+  set_target_properties(PFFFT_SHARED PROPERTIES OUTPUT_NAME "pffft.${CMAKE_GENERATOR_PLATFORM}.dll")
 else()
-  set_target_properties(PFFFT_SHARED64 PROPERTIES OUTPUT_NAME "pffft.x64.so")
+  set_target_properties(PFFFT_SHARED PROPERTIES OUTPUT_NAME "pffft.${CMAKE_GENERATOR_PLATFORM}.so")
 endif()
-set_target_properties(PFFFT_SHARED64 PROPERTIES PUBLIC_HEADER pffft.h)
-target_compile_definitions(PFFFT_SHARED64 PRIVATE _USE_MATH_DEFINES)
-target_activate_c_compiler_warnings(PFFFT_SHARED64)
+set_target_properties(PFFFT_SHARED PROPERTIES PUBLIC_HEADER pffft.h)
+target_compile_definitions(PFFFT_SHARED PRIVATE _USE_MATH_DEFINES)
+target_activate_c_compiler_warnings(PFFFT_SHARED)
 if (PFFFT_USE_SCALAR_VECT)
   target_compile_definitions(PFFFT_SHARED PRIVATE PFFFT_SCALVEC_ENABLED=1)
 endif()
 if (PFFFT_USE_DEBUG_ASAN)
-  target_compile_options(PFFFT_SHARED64 PRIVATE "-fsanitize=address")
+  target_compile_options(PFFFT_SHARED PRIVATE "-fsanitize=address")
 endif()
-target_set_c_arch_flags(PFFFT_SHARED64)
+target_set_c_arch_flags(PFFFT_SHARED)
 if (NOT PFFFT_USE_SIMD)
-  target_compile_definitions(PFFFT_SHARED64 PRIVATE PFFFT_SIMD_DISABLE=1)
+  target_compile_definitions(PFFFT_SHARED PRIVATE PFFFT_SIMD_DISABLE=1)
 endif()
-target_link_libraries( PFFFT_SHARED64 ${ASANLIB} ${MATHLIB} )
-set_property(TARGET PFFFT_SHARED64 APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+target_link_libraries( PFFFT_SHARED ${ASANLIB} ${MATHLIB} )
+set_property(TARGET PFFFT_SHARED APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
 
