@@ -170,7 +170,7 @@ endif()
 
 ######################################################
 
-add_library(PFFFT SHARED ${FLOAT_SOURCES} ${DOUBLE_SOURCES} pffft_common.c pffft_priv_impl.h pffft.hpp )
+add_library(PFFFT STATIC ${FLOAT_SOURCES} ${DOUBLE_SOURCES} pffft_common.c pffft_priv_impl.h pffft.hpp )
 set_target_properties(PFFFT PROPERTIES PUBLIC_HEADER pfffts.h)
 set_target_properties(PFFFT PROPERTIES OUTPUT_NAME "pffft")
 target_compile_definitions(PFFFT PRIVATE _USE_MATH_DEFINES)
@@ -189,6 +189,52 @@ target_link_libraries( PFFFT ${ASANLIB} ${MATHLIB} )
 set_property(TARGET PFFFT APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
+
+add_library(PFFFT_S SHARED ${FLOAT_SOURCES} ${DOUBLE_SOURCES} pffft_common.c pffft_priv_impl.h pffft.hpp )
+if (WIN32)
+  set_target_properties(new_thing PROPERTIES OUTPUT_NAME "pffft.x64.dll")
+else()
+  set_target_properties(new_thing PROPERTIES OUTPUT_NAME "pffft.x64.so")
+else()
+set_target_properties(PFFFT_S PROPERTIES PUBLIC_HEADER pfffts.h)
+set_target_properties(PFFFT_S PROPERTIES OUTPUT_NAME "pffft")
+target_compile_definitions(PFFFT_S PRIVATE _USE_MATH_DEFINES)
+target_activate_c_compiler_warnings(PFFFT_S)
+if (PFFFT_USE_SCALAR_VECT)
+  target_compile_definitions(PFFFT_S PRIVATE PFFFT_SCALVEC_ENABLED=1)
+endif()
+if (PFFFT_USE_DEBUG_ASAN)
+  target_compile_options(PFFFT_S PRIVATE "-fsanitize=address")
+endif()
+target_set_c_arch_flags(PFFFT_S)
+if (NOT PFFFT_USE_SIMD)
+  target_compile_definitions(PFFFT_S PRIVATE PFFFT_SIMD_DISABLE=1)
+endif()
+target_link_libraries( PFFFT_S ${ASANLIB} ${MATHLIB} )
+set_property(TARGET PFFFT_S APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+)
+
+set_target_properties(PFFFT PROPERTIES PUBLIC_HEADER pfffts.h)
+set_target_properties(PFFFT PROPERTIES OUTPUT_NAME "pffft")
+target_compile_definitions(PFFFT PRIVATE _USE_MATH_DEFINES)
+target_activate_c_compiler_warnings(PFFFT)
+if (PFFFT_USE_SCALAR_VECT)
+  target_compile_definitions(PFFFT PRIVATE PFFFT_SCALVEC_ENABLED=1)
+endif()
+if (PFFFT_USE_DEBUG_ASAN)
+  target_compile_options(PFFFT PRIVATE "-fsanitize=address")
+endif()
+target_set_c_arch_flags(PFFFT)
+if (NOT PFFFT_USE_SIMD)
+  target_compile_definitions(PFFFT PRIVATE PFFFT_SIMD_DISABLE=1)
+endif()
+target_link_libraries( PFFFT ${ASANLIB} ${MATHLIB} )
+set_property(TARGET PFFFT APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+)
+
+
 if (INSTALL_PFFFT)
   set(INSTALL_TARGETS ${INSTALL_TARGETS} PFFFT)
   set(INSTALL_HEADERS ${INSTALL_HEADERS} pffft.hpp)
@@ -221,7 +267,7 @@ if (PFFFT_USE_TYPE_FLOAT)
       set(INSTALL_HEADERS ${INSTALL_HEADERS} pf_mixer.h pf_cplx.h pf_carrier.h pf_cic.h)
   endif()
 endif()
-
+add_library()
 ######################################################
 
 if (PFFFT_USE_FFTPACK)
