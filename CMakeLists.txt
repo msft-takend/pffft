@@ -193,7 +193,7 @@ if (INSTALL_PFFFT)
   set(INSTALL_HEADERS ${INSTALL_HEADERS} pffft.hpp)
 endif()
 
-option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+
 add_library(PFFFT_SHARED STATIC ${FLOAT_SOURCES} ${DOUBLE_SOURCES} pffft_common.c pffft_priv_impl.h pffft.hpp )
 if (WIN32)
   set_target_properties(PFFFT_SHARED PROPERTIES OUTPUT_NAME "pffft.s.dll")
