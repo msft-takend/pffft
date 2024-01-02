@@ -195,7 +195,12 @@ endif()
 
 
 add_library(PFFFT_SHARED STATIC ${FLOAT_SOURCES} ${DOUBLE_SOURCES} pffft_common.c pffft_priv_impl.h pffft.hpp )
-set_target_properties(PFFFT_SHARED PROPERTIES OUTPUT_NAME "s.pffft")
+if (WIN32)
+  set_target_properties(PFFFT_SHARED PROPERTIES OUTPUT_NAME "pffft.s.dll")
+else()
+  set_target_properties(PFFFT_SHARED PROPERTIES OUTPUT_NAME "pffft.s.so")
+endif()
+set_target_properties(mylib PROPERTIES PUBLIC_HEADER pffft.h)
 target_compile_definitions(PFFFT_SHARED PRIVATE _USE_MATH_DEFINES)
 target_activate_c_compiler_warnings(PFFFT_SHARED)
 if (PFFFT_USE_SCALAR_VECT)
