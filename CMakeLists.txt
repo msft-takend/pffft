@@ -193,6 +193,34 @@ if (INSTALL_PFFFT)
   set(INSTALL_HEADERS ${INSTALL_HEADERS} pffft.hpp)
 endif()
 
+add_library(PFFFT_SHARE SHARED ${FLOAT_SOURCES} ${DOUBLE_SOURCES} pffft_common.c pffft_priv_impl.h pffft.hpp )
+if (WIN32)
+  set_target_properties(new_thing PROPERTIES OUTPUT_NAME "pffft_shared.x64")
+else()
+  set_target_properties(new_thing PROPERTIES OUTPUT_NAME "pffft_shared")
+endif()
+target_compile_definitions(PFFFT_SHARE PRIVATE _USE_MATH_DEFINES)
+target_activate_c_compiler_warnings(PFFFT_SHARE)
+if (PFFFT_USE_SCALAR_VECT)
+  target_compile_definitions(PFFFT_SHARE PRIVATE PFFFT_SCALVEC_ENABLED=1)
+endif()
+if (PFFFT_USE_DEBUG_ASAN)
+  target_compile_options(PFFFT_SHARE PRIVATE "-fsanitize=address")
+endif()
+target_set_c_arch_flags(PFFFT_SHARE)
+if (NOT PFFFT_USE_SIMD)
+  target_compile_definitions(PFFFT_SHARE PRIVATE PFFFT_SIMD_DISABLE=1)
+endif()
+target_link_libraries( PFFFT_SHARE ${ASANLIB} ${MATHLIB} )
+set_property(TARGET PFFFT_SHARE APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+)
+if (INSTALL_PFFFT)
+  set(INSTALL_TARGETS ${INSTALL_TARGETS} PFFFT)
+  set(INSTALL_HEADERS ${INSTALL_HEADERS} pffft.hpp)
+endif()
+
+
 ######################################################
 
 if (PFFFT_USE_TYPE_FLOAT)
