@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(PRETTY_FAST_FFT)
+project(PRETTY_FAST_FFT VERSION 1.0.1 DESCRIPTION "Pretty Fast FFT")
 
 # smaller library size?
 option(PFFFT_USE_TYPE_FLOAT  "activate single precision 'float'?" ON)
@@ -170,7 +170,8 @@ endif()
 
 ######################################################
 
-add_library(PFFFT STATIC ${FLOAT_SOURCES} ${DOUBLE_SOURCES} pffft_common.c pffft_priv_impl.h pffft.hpp )
+add_library(PFFFT SHARED ${FLOAT_SOURCES} ${DOUBLE_SOURCES} pffft_common.c pffft_priv_impl.h pffft.hpp )
+set_target_properties(PFFFT PROPERTIES PUBLIC_HEADER pfffts.h)
 set_target_properties(PFFFT PROPERTIES OUTPUT_NAME "pffft")
 target_compile_definitions(PFFFT PRIVATE _USE_MATH_DEFINES)
 target_activate_c_compiler_warnings(PFFFT)
@@ -196,7 +197,8 @@ endif()
 ######################################################
 
 if (PFFFT_USE_TYPE_FLOAT)
-  add_library(PFDSP STATIC pf_mixer.cpp pf_mixer.h pf_cplx.h pf_carrier.cpp pf_carrier.h pf_cic.cpp pf_cic.h fmv.h )
+  add_library(PFDSP SHARED pf_mixer.cpp pf_mixer.h pf_cplx.h pf_carrier.cpp pf_carrier.h pf_cic.cpp pf_cic.h fmv.h )
+  set_target_properties(PFDSP PROPERTIES PUBLIC_HEADER PFDSP.h)
   set_property(TARGET PFDSP PROPERTY CXX_STANDARD 11)
   set_property(TARGET PFDSP PROPERTY CXX_STANDARD_REQUIRED ON)
   set_target_properties(PFDSP PROPERTIES OUTPUT_NAME "pfdsp")
@@ -225,7 +227,7 @@ endif()
 if (PFFFT_USE_FFTPACK)
 
   # float / single precision
-  add_library(FFTPACK_FLOAT STATIC fftpack.c fftpack.h)
+  add_library(FFTPACK_FLOAT SHARED fftpack.c fftpack.h)
   target_compile_definitions(FFTPACK_FLOAT PRIVATE _USE_MATH_DEFINES)
   target_activate_c_compiler_warnings(FFTPACK_FLOAT)
   target_link_libraries( FFTPACK_FLOAT ${MATHLIB} )
@@ -234,7 +236,7 @@ if (PFFFT_USE_FFTPACK)
   )
 
   # double precision
-  add_library(FFTPACK_DOUBLE STATIC fftpack.c fftpack.h)
+  add_library(FFTPACK_DOUBLE SHARED fftpack.c fftpack.h)
   target_compile_definitions(FFTPACK_DOUBLE PRIVATE _USE_MATH_DEFINES)
   target_compile_definitions(FFTPACK_DOUBLE PUBLIC FFTPACK_DOUBLE_PRECISION)
   target_activate_c_compiler_warnings(FFTPACK_DOUBLE)
@@ -258,7 +260,7 @@ endif()
 
 if (PFFFT_USE_TYPE_FLOAT)
   # only 'float' supported in PFFASTCONV
-  add_library(PFFASTCONV STATIC pffastconv.c pffastconv.h pffft.h )
+  add_library(PFFASTCONV SHARED pffastconv.c pffastconv.h pffft.h )
   set_target_properties(PFFASTCONV PROPERTIES OUTPUT_NAME "pffastconv")
   target_compile_definitions(PFFASTCONV PRIVATE _USE_MATH_DEFINES)
   target_activate_c_compiler_warnings(PFFASTCONV)

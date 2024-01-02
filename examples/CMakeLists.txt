@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(examples)
+project(examples VERSION 1.0.1 DESCRIPTION "PFFT Examples")
 
 if ( CMAKE_C_COMPILER_ID MATCHES "MSVC" )
   # using Visual Studio C++
