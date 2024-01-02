@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.8)
 project(PRETTY_FAST_FFT)
 
 # smaller library size?
@@ -207,7 +207,6 @@ endif()
 if (PFFFT_USE_DEBUG_ASAN)
   target_compile_options(PFFFT_SHARE PRIVATE "-fsanitize=address")
 endif()
-target_set_c_arch_flags(PFFFT_SHARE)
 if (NOT PFFFT_USE_SIMD)
   target_compile_definitions(PFFFT_SHARE PRIVATE PFFFT_SIMD_DISABLE=1)
 endif()

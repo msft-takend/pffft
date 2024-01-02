@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.8)
 project(BENCH_PFFFT)
 
 set(BENCH_ID  "default" CACHE STRING "ID: use single word without spaces. gets part of result filename")
