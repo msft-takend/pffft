@@ -19,13 +19,13 @@ jobs:
           with:
            submodules: recursive             
         - name: cmake_make_simd_float_double
-          run: mkdir ./${{runner.workspace}}/bin/full && cmake -S . -B ./${{runner.workspace}}/bin/full -A ${{ matrix.arch }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPFFFT_USE_BENCH_GREEN=OFF -DPFFFT_USE_BENCH_KISS=OFF -DPFFFT_USE_BENCH_POCKET=OFF && cmake --build ./${{runner.workspace}}/bin/full
+          run: mkdir ${{runner.workspace}}/bin/full && cmake -S . -B ${{runner.workspace}}/bin/full -A ${{ matrix.arch }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPFFFT_USE_BENCH_GREEN=OFF -DPFFFT_USE_BENCH_KISS=OFF -DPFFFT_USE_BENCH_POCKET=OFF && cmake --build ${{runner.workspace}}/bin/full
         - name: cmake_make_simd_float
-          run: mkdir ./${{runner.workspace}}/bin/float && cmake -S . -B ./${{runner.workspace}}/bin/float -A ${{ matrix.arch }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPFFFT_USE_TYPE_DOUBLE=OFF -DPFFFT_USE_BENCH_GREEN=OFF -DPFFFT_USE_BENCH_KISS=OFF -DPFFFT_USE_BENCH_POCKET=OFF && cmake --build ./${{runner.workspace}}/bin/float
+          run: mkdir ${{runner.workspace}}/bin/float && cmake -S . -B ${{runner.workspace}}/bin/float -A ${{ matrix.arch }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPFFFT_USE_TYPE_DOUBLE=OFF -DPFFFT_USE_BENCH_GREEN=OFF -DPFFFT_USE_BENCH_KISS=OFF -DPFFFT_USE_BENCH_POCKET=OFF && cmake --build ${{runner.workspace}}/bin/float
         - name: cmake_make_simd_double
-          run: mkdir ./${{runner.workspace}}/bin/double && cmake -S . -B ./${{runner.workspace}}/bin/double -A ${{ matrix.arch }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPFFFT_USE_TYPE_FLOAT=OFF -DPFFFT_USE_BENCH_GREEN=OFF -DPFFFT_USE_BENCH_KISS=OFF -DPFFFT_USE_BENCH_POCKET=OFF && cmake --build ./${{runner.workspace}}/bin/double
+          run: mkdir ${{runner.workspace}}/bin/double && cmake -S . -B ${{runner.workspace}}/bin/double -A ${{ matrix.arch }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPFFFT_USE_TYPE_FLOAT=OFF -DPFFFT_USE_BENCH_GREEN=OFF -DPFFFT_USE_BENCH_KISS=OFF -DPFFFT_USE_BENCH_POCKET=OFF && cmake --build ${{runner.workspace}}/bin/double
         - name: 'Upload Artifact'
           uses: actions/upload-artifact@v2
           with:
             name: pffft_matrix_${{ matrix.os }}_builds
-            path: ./${{runner.workspace}}/bin
+            path: ${{runner.workspace}}/bin
