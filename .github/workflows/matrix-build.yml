@@ -1,0 +1,31 @@
+name: Matrix-Build-PFFFT
+
+on: [push]
+
+jobs: 
+    build:
+      name: Build ${{ matrix.os }}
+      runs-on: ${{ matrix.os }}
+      strategy:
+        matrix:
+          os: [ubuntu-latest, windows-latest]
+          arch: [x64, arm64]
+      steps:
+        - name: Get latest CMake
+          uses: lukka/get-cmake@latest
+
+        - name: Checkout code
+          uses: actions/checkout@v2
+          with:
+           submodules: recursive             
+        - name: cmake_make_simd_float_double
+          run: mkdir ./bin/full && cmake -S . -B ./bin/full -A ${{ matrix.arch }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPFFFT_USE_BENCH_GREEN=OFF -DPFFFT_USE_BENCH_KISS=OFF -DPFFFT_USE_BENCH_POCKET=OFF && cmake --build ./bin/full
+        - name: cmake_make_simd_float
+          run: mkdir ./bin/float && cmake -S . -B ./bin/float -A ${{ matrix.arch }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPFFFT_USE_TYPE_DOUBLE=OFF -DPFFFT_USE_BENCH_GREEN=OFF -DPFFFT_USE_BENCH_KISS=OFF -DPFFFT_USE_BENCH_POCKET=OFF && cmake --build ./bin/float
+        - name: cmake_make_simd_double
+          run: mkdir ./bin/double && cmake -S . -B ./bin/double -A ${{ matrix.arch }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPFFFT_USE_TYPE_FLOAT=OFF -DPFFFT_USE_BENCH_GREEN=OFF -DPFFFT_USE_BENCH_KISS=OFF -DPFFFT_USE_BENCH_POCKET=OFF && cmake --build ./bin/double
+        - name: 'Upload Artifact'
+          uses: actions/upload-artifact@v2
+          with:
+            name: pffft_matrix_${{ matrix.os }}_builds
+            path: ./bin
